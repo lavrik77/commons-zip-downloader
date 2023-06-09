@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="init" author="LavrinenkoRA">
+        <sql>
+            create schema if not exists fias;
+
+            create table if not exists fias.address_object (
+                id              bigint          primary key,
+                object_id       bigint,
+                object_guid     uuid,
+                change_id       bigint,
+                "name"          varchar(255),
+                type_name       varchar(50),
+                "level"         int,
+                oper_type_id    int,
+                prev_id         bigint,
+                next_id         bigint,
+                update_date     timestamptz,
+                start_date      timestamptz,
+                end_date        timestamptz,
+                is_actual       boolean,
+                is_active       boolean
+            );
+            comment on table fias.address_object is 'Сведения классификатора адресообразующих элементов';
+            comment on column fias.address_object.id is 'Уникальный идентификатор записи. Ключевое поле';
+            comment on column fias.address_object.object_id is 'Глобальный уникальный идентификатор адресного объекта типа INTEGER';
+            comment on column fias.address_object.object_guid is 'Глобальный уникальный идентификатор адресного объекта типа UUID';
+            comment on column fias.address_object.change_id is 'ID изменившей транзакции';
+            comment on column fias.address_object.name is 'Наименование';
+            comment on column fias.address_object.type_name is 'Краткое наименование типа объекта';
+            comment on column fias.address_object.level is 'Уровень адресного объекта';
+            comment on column fias.address_object.oper_type_id is 'Статус действия над записью – причина появления записи';
+            comment on column fias.address_object.prev_id is 'Идентификатор записи связывания с предыдущей исторической записью';
+            comment on column fias.address_object.next_id is 'Идентификатор записи связывания с последующей исторической записью';
+            comment on column fias.address_object.update_date is 'Дата внесения (обновления) записи';
+            comment on column fias.address_object.start_date is 'Начало действия записи';
+            comment on column fias.address_object.end_date is 'Окончание действия записи';
+            comment on column fias.address_object.is_actual is 'Статус актуальности адресного объекта ФИАС';
+            comment on column fias.address_object.is_active is 'Признак действующего адресного объекта';
+
+            create table if not exists fias.house (
+                id              bigint          primary key,
+                object_id       bigint,
+                object_guid     uuid,
+                change_id       bigint,
+                house_num       varchar(50),
+                add_num1        varchar(50),
+                add_num2        varchar(50),
+                house_type      int,
+                add_type1       int,
+                add_type2       int,
+                oper_type_id    int,
+                prev_id         bigint,
+                next_id         bigint,
+                update_date     timestamptz,
+                start_date      timestamptz,
+                end_date        timestamptz,
+                is_actual       boolean,
+                is_active       boolean
+            );
+            comment on table fias.house is 'Сведения по номерам домов улиц городов и населенных пунктов';
+            comment on column fias.house.id is 'Уникальный идентификатор записи. Ключевое поле';
+            comment on column fias.house.object_id is 'Глобальный уникальный идентификатор адресного объекта типа INTEGER';
+            comment on column fias.house.object_guid is 'Глобальный уникальный идентификатор адресного объекта типа UUID';
+            comment on column fias.house.change_id is 'ID изменившей транзакции';
+            comment on column fias.house.house_num is 'Основной номер дома';
+            comment on column fias.house.add_num1 is 'Дополнительный номер дома 1';
+            comment on column fias.house.add_num2 is 'Дополнительный номер дома 2';
+            comment on column fias.house.house_type is 'Основной тип дома';
+            comment on column fias.house.add_type1 is 'Дополнительный тип дома 1';
+            comment on column fias.house.add_type2 is 'Дополнительный тип дома 2';
+            comment on column fias.house.oper_type_id is 'Статус действия над записью – причина появления записи';
+            comment on column fias.house.prev_id is 'Идентификатор записи связывания с предыдущей исторической записью';
+            comment on column fias.house.next_id is 'Идентификатор записи связывания с последующей исторической записью';
+            comment on column fias.house.update_date is 'Дата внесения (обновления) записи';
+            comment on column fias.house.start_date is 'Начало действия записи';
+            comment on column fias.house.end_date is 'Окончание действия записи';
+            comment on column fias.house.is_actual is 'Статус актуальности адресного объекта ФИАС';
+            comment on column fias.house.is_active is 'Признак действующего адресного объекта';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

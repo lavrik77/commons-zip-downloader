@@ -1,0 +1,75 @@
+server:
+  forward-headers-strategy: none
+  servlet:
+    context-path: /zip-downloader
+  port: 8080
+hostname: localdev
+
+config:
+
+  datasource:
+    server: rc1c-juwwhcmdp7fkb95c.mdb.yandexcloud.net:6432
+    ssl: true
+    sslmode: verify-full
+    database: integrations-001-data-control
+    username: integrations-001-data-control_dev
+    password: integrations-001-data-control
+
+  keycloak:
+    server: https://dev.portal.globaltruck.ru
+    realm: globaltruck
+    client: integrations-gt-int-001-data-control
+    secret: 9b2224fc-8f10-46bc-8086-88771a1b2e73
+
+  server:
+    url: http://localhost:8080
+
+  client:
+    fias:
+      url: http://fias.nalog.ru
+      path: /WebServices/Public/GetLastDownloadFileInfo
+
+  security:
+    required:
+      roles:
+        monitor: ROLE_int-monitor-user
+        sd1ltp: ROLE_SD_1LTP
+        sd2ltp: ROLE_SD_2LTP
+
+spring:
+  application:
+    name: zip-downloader
+  liquibase:
+    enabled: true
+    drop-first: false
+    database-change-log-lock-table: DATABASECHANGELOGLOCK
+    database-change-log-table: DATABASECHANGELOG
+    change-log: classpath:/db/db.changelog-master.xml
+  jpa:
+    database: POSTGRESQL
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+
+  datasource:
+    url: jdbc:postgresql://${config.datasource.server}/${config.datasource.database}?&ApplicationName=${hostname}&ssl=${config.datasource.ssl}&sslmode=${config.datasource.sslmode}
+    username: ${config.datasource.username}
+    password: ${config.datasource.password}
+    driverClassName: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 2
+      connection-timeout: 10000
+      max-lifetime: 2000
+      validation-timeout: 10000
+
+springdoc:
+  swagger-ui:
+    operationsSorter: alpha
+    tags-sorter: alpha
+    version: 1.00.0.0-BETA
+  writer-with-default-pretty-printer: true
+
+logging:
+  level:
+    ru.globaltruck.downloader.fias.handler: info
+    ru.globaltruck.downloader.fias.service: info
