@@ -1,11 +1,8 @@
 package ru.globaltruck.downloader.fias.mapper;
 
-import org.springframework.stereotype.Component;
-import ru.globaltruck.downloader.fias.repository.entity.AddressObjectEntity;
 import ru.globaltruck.downloader.fias.repository.entity.HouseEntity;
 import ru.globaltruck.downloader.fias.util.GarObjectMap;
 
-@Component
 public class HouseMapper implements Mapper<HouseEntity> {
 
     @Override

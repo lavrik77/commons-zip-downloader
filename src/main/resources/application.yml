@@ -3,16 +3,16 @@ server:
   servlet:
     context-path: /zip-downloader
   port: 8080
-hostname: localdev
+hostname: local
 
 config:
 
   datasource:
-    server: rc1c-juwwhcmdp7fkb95c.mdb.yandexcloud.net:6432
+    server: c-c9qo77lmedokhub6ve0h.rw.mdb.yandexcloud.net:6432
     ssl: true
     sslmode: verify-full
     database: integrations-001-data-control
-    username: integrations-001-data-control_dev
+    username: integrations-001-data-control_preprod
     password: integrations-001-data-control
 
   keycloak:
@@ -28,13 +28,6 @@ config:
     fias:
       url: http://fias.nalog.ru
       path: /WebServices/Public/GetLastDownloadFileInfo
-
-  security:
-    required:
-      roles:
-        monitor: ROLE_int-monitor-user
-        sd1ltp: ROLE_SD_1LTP
-        sd2ltp: ROLE_SD_2LTP
 
 spring:
   application:
@@ -57,7 +50,6 @@ spring:
     password: ${config.datasource.password}
     driverClassName: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 2
       connection-timeout: 10000
       max-lifetime: 2000
       validation-timeout: 10000

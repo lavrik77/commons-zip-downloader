@@ -2,51 +2,72 @@ package ru.globaltruck.downloader.fias.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 import ru.globaltruck.downloader.fias.handler.AbstractHandler;
-import ru.globaltruck.downloader.fias.handler.AddressObjectHandler;
-import ru.globaltruck.downloader.fias.handler.HouseHandler;
 import ru.globaltruck.downloader.fias.error.UnZipError;
+import ru.globaltruck.downloader.fias.util.HandlerFactory;
 import ru.globaltruck.downloader.fias.util.LoadingRepeaterUtil;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.ByteArrayInputStream;
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static ru.globaltruck.downloader.fias.util.FileNamePattern.ADDR_OBJ;
-import static ru.globaltruck.downloader.fias.util.FileNamePattern.HOUSES;
+import static ru.globaltruck.downloader.fias.util.FileNamePattern.*;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class FileDownloadService {
+public class ArcFileDownloadService {
+    private final HandlerFactory factory;
 
-    private final AddressObjectHandler addressObjectHandler;
-
-    private final HouseHandler houseHandler;
-
+    @Async
     public void downloadAddressObjects(String filePath) {
         try {
-            download(filePath, addressObjectHandler, ADDR_OBJ);
+            log.info("AddressObjects downloading started");
+            download(filePath, factory.getAddressObjectHandler(), ADDR_OBJ_PATTERN);
         } catch (UnZipError e) {
             LoadingRepeaterUtil.clearName();
             log.error(e.getMessage(), e);
         }
     }
 
+    @Async
     public void downloadHouses(String filePath) {
         try {
-            download(filePath, houseHandler, HOUSES);
+            log.info("Houses downloading started");
+            download(filePath, factory.getHouseHandler(), HOUSE_PATTERN);
+        } catch (UnZipError e) {
+            LoadingRepeaterUtil.clearName();
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    @Async
+    public void downloadAdmHierarchy(String filePath) {
+        try {
+            log.info("Hierarchy downloading started");
+            download(filePath, factory.getAdmHierarchyHandler(), ADM_HIERARCHY_PATTERN);
+        } catch (UnZipError e) {
+            LoadingRepeaterUtil.clearName();
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    @Async
+    public void downloadMunHierarchy(String filePath) {
+        try {
+            log.info("Hierarchy downloading started");
+            download(filePath, factory.getAdmHierarchyHandler(), ADM_HIERARCHY_PATTERN);
         } catch (UnZipError e) {
             LoadingRepeaterUtil.clearName();
             log.error(e.getMessage(), e);
@@ -61,12 +82,17 @@ public class FileDownloadService {
             ZipInputStream zis;
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
+            HttpsURLConnection connection = null;
             if (filePath.toLowerCase().startsWith("http")) {
-                URLConnection connection = new URL(filePath).openConnection();
-                connection.setUseCaches(true);
+                connection = (HttpsURLConnection) new URL(filePath).openConnection();
+                connection.addRequestProperty("Cache-Control", "no-cache");
+                connection.addRequestProperty("Connection", "keep-alive");
+                connection.setRequestMethod("GET");
+                connection.setUseCaches(false);
                 connection.setDoInput(true);
-                connection.setConnectTimeout(18000000);
-                connection.setReadTimeout(18000000);
+                connection.setConnectTimeout(600000);
+                connection.setReadTimeout(7200000);
+                log.info(connection.getRequestProperties());
                 zis = new ZipInputStream(connection.getInputStream());
             } else {
                 zis = new ZipInputStream(new FileInputStream(filePath));
@@ -77,24 +103,29 @@ public class FileDownloadService {
                 zipEntry = zis.getNextEntry();
             }
             LoadingRepeaterUtil.offErrFlag();
+            BufferedInputStream bis;
             while (zipEntry != null) {
                 if (pattern.matcher(zipEntry.getName()).find() && zipEntry.getSize() > 60) {
                     LoadingRepeaterUtil.setFileName(zipEntry.getName());
-                    System.out.println("\n");
+
                     log.info("Entry name: {}", zipEntry.getName());
-                    Scanner sc = new Scanner(zis);
-                    while (sc.hasNextLine()) {
-                        String line = sc.nextLine();
-                        log.debug(line);
-                        handler.setNodeCnt(0);
-                        handler.setRecordCnt(0);
-                        saxParser.parse(new ByteArrayInputStream(line.getBytes()), handler);
-                    }
+//                    Scanner sc = new Scanner(zis);
+//                    while (sc.hasNextLine()) {
+//                        String line = sc.nextLine();
+//                        log.info(line);
+                    bis = new BufferedInputStream(zis, 512);
+                    saxParser.parse(bis /*new ByteArrayInputStream(line.getBytes())*/, handler);
+//                    }
+                    bis.close();
                 }
                 zipEntry = zis.getNextEntry();
             }
             LoadingRepeaterUtil.clearName();
+            LoadingRepeaterUtil.offErrFlag();
             zis.close();
+            if (connection != null) {
+                connection.disconnect();
+            }
         } catch (IOException | ParserConfigurationException | SAXException e) {
             LoadingRepeaterUtil.onErrFlag();
             throw new UnZipError(String

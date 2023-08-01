@@ -14,7 +14,7 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name = "address_object", schema = "fias")
-public class AddressObjectEntity extends BaseEntity {
+public class AddressObjectEntity extends SimpleObjectEntity {
     private String name;
     private String typeName;
     private Integer level;

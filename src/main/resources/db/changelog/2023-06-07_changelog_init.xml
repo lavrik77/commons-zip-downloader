@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="init" author="LavrinenkoRA">
+    <changeSet id="init_fias" author="LavrinenkoRA">
         <sql>
             create schema if not exists fias;
 
@@ -82,6 +82,72 @@
             comment on column fias.house.end_date is 'Окончание действия записи';
             comment on column fias.house.is_actual is 'Статус актуальности адресного объекта ФИАС';
             comment on column fias.house.is_active is 'Признак действующего адресного объекта';
+
+            create table if not exists fias.adm_hierarchy (
+                id              bigint          primary key,
+                object_id       bigint,
+                parent_obj_id   bigint,
+                change_id       bigint,
+                region_code     varchar(4),
+                area_code       varchar(4),
+                city_code       varchar(4),
+                place_code      varchar(4),
+                plan_code       varchar(4),
+                street_code     varchar(4),
+                "path"          varchar,
+                prev_id         bigint,
+                next_id         bigint,
+                update_date     timestamptz,
+                start_date      timestamptz,
+                end_date        timestamptz,
+                is_active       boolean
+            );
+            comment on table fias.adm_hierarchy is 'Сведения по иерархии в административном делении';
+            comment on column fias.adm_hierarchy.id is 'Уникальный идентификатор записи. Ключевое поле';
+            comment on column fias.adm_hierarchy.object_id is 'Глобальный уникальный идентификатор объекта';
+            comment on column fias.adm_hierarchy.parent_obj_id is 'Идентификатор родительского объекта';
+            comment on column fias.adm_hierarchy.change_id is 'ID изменившей транзакции';
+            comment on column fias.adm_hierarchy.region_code is 'Код региона';
+            comment on column fias.adm_hierarchy.area_code is 'Код района';
+            comment on column fias.adm_hierarchy.city_code is 'Код города';
+            comment on column fias.adm_hierarchy.place_code is 'Код населенного пункта';
+            comment on column fias.adm_hierarchy.plan_code is 'Код ЭПС';
+            comment on column fias.adm_hierarchy.street_code is 'Код улицы';
+            comment on column fias.adm_hierarchy.path is 'Материализованный путь к объекту (полная иерархия)';
+            comment on column fias.adm_hierarchy.prev_id is 'Идентификатор записи связывания с предыдущей исторической записью';
+            comment on column fias.adm_hierarchy.next_id is 'Идентификатор записи связывания с последующей исторической записью';
+            comment on column fias.adm_hierarchy.update_date is 'Дата внесения (обновления) записи';
+            comment on column fias.adm_hierarchy.start_date is 'Начало действия записи';
+            comment on column fias.adm_hierarchy.end_date is 'Окончание действия записи';
+            comment on column fias.adm_hierarchy.is_active is 'Признак действующего адресного объекта';
+
+            create table if not exists fias.mun_hierarchy (
+                id              bigint          primary key,
+                object_id       bigint,
+                parent_obj_id   bigint,
+                change_id       bigint,
+                oktmo           varchar(11),
+                "path"          varchar,
+                prev_id         bigint,
+                next_id         bigint,
+                update_date     timestamptz,
+                start_date      timestamptz,
+                end_date        timestamptz,
+                is_active       boolean
+            );
+            comment on table fias.mun_hierarchy is 'Сведения по иерархии в муниципальном делении';
+            comment on column fias.mun_hierarchy.id is 'Уникальный идентификатор записи. Ключевое поле';
+            comment on column fias.mun_hierarchy.object_id is 'Глобальный уникальный идентификатор объекта';
+            comment on column fias.mun_hierarchy.parent_obj_id is 'Идентификатор родительского объекта';
+            comment on column fias.mun_hierarchy.change_id is 'ID изменившей транзакции';
+            comment on column fias.mun_hierarchy.oktmo is 'Код ОКТМО';
+            comment on column fias.mun_hierarchy.path is 'Материализованный путь к объекту (полная иерархия)';
+            comment on column fias.mun_hierarchy.prev_id is 'Идентификатор записи связывания с предыдущей исторической записью';
+            comment on column fias.mun_hierarchy.next_id is 'Идентификатор записи связывания с последующей исторической записью';
+            comment on column fias.mun_hierarchy.update_date is 'Дата внесения (обновления) записи';
+            comment on column fias.mun_hierarchy.start_date is 'Начало действия записи';
+            comment on column fias.mun_hierarchy.end_date is 'Окончание действия записи';
+            comment on column fias.mun_hierarchy.is_active is 'Признак действующего адресного объекта';
         </sql>
     </changeSet>
 

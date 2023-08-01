@@ -17,32 +17,38 @@ configurations {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-        url "https://res-lab.globaltruck.ru/api/v4/groups/backend/-/packages/maven"
-        name "GitLab"
-        credentials(HttpHeaderCredentials) {
-            name = 'Job-Token'
-            value = System.getenv("CI_JOB_TOKEN")
-        }
-        authentication {
-            header(HttpHeaderAuthentication)
-        }
-    }
+//    maven {
+//        url "https://res-lab.globaltruck.ru/api/v4/groups/backend/-/packages/maven"
+//        name "GitLab"
+//        credentials(HttpHeaderCredentials) {
+//            name = 'Job-Token'
+//            value = System.getenv("CI_JOB_TOKEN")
+//        }
+//        authentication {
+//            header(HttpHeaderAuthentication)
+//        }
+//    }
 }
 
 dependencies {
-    implementation 'ru.globaltruck:web-starter:0.4.1'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.liquibase:liquibase-core'
-    compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.7'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.10'
+    implementation group: 'io.swagger.parser.v3', name: 'swagger-parser', version: '2.1.1'
+
+//    implementation 'commons-net:commons-net:3.9.0'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+//    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+
 
 }
 

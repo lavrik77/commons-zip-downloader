@@ -15,20 +15,17 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "house", schema = "fias")
-public class HouseEntity extends SimpleObjectEntity {
-    private String houseNum;
-    private String addNum1;
-    private String addNum2;
-    private Integer houseType;
-    private Integer addType1;
-    private Integer addType2;
+@Table(name = "mun_hierarchy", schema = "fias")
+public class MunHierarchyEntity extends BaseEntity {
+    private Long parentObjId;
+    private String oktmo;
+    private String path;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        HouseEntity that = (HouseEntity) o;
+        MunHierarchyEntity that = (MunHierarchyEntity) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 
