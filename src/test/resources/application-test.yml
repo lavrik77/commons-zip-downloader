@@ -1,27 +1,16 @@
 server:
   forward-headers-strategy: none
   servlet:
-    context-path: /zip-downloader
+    context-path: /fias/downloader
   port: 8080
-hostname: local
 
 config:
 
   datasource:
-    server: c-c9qo77lmedokhub6ve0h.rw.mdb.yandexcloud.net:6432
-    ssl: true
-    sslmode: verify-full
-    database: integrations-001-data-control
-    username: integrations-001-data-control_preprod
-    password: integrations-001-data-control
-
-  server:
-    url: http://localhost:8080
-
-  client:
-    fias:
-      url: http://fias.nalog.ru
-      path: /WebServices/Public/GetLastDownloadFileInfo
+    server: localhost:48432
+    database: test
+    username: test
+    password: test
 
 spring:
   application:
@@ -39,14 +28,10 @@ spring:
       ddl-auto: validate
 
   datasource:
-    url: jdbc:postgresql://${config.datasource.server}/${config.datasource.database}?&ApplicationName=${hostname}&ssl=${config.datasource.ssl}&sslmode=${config.datasource.sslmode}
+    url: jdbc:postgresql://${config.datasource.server}/${config.datasource.database}?&ApplicationName=${hostname}
     username: ${config.datasource.username}
     password: ${config.datasource.password}
     driverClassName: org.postgresql.Driver
-    hikari:
-      connection-timeout: 10000
-      max-lifetime: 2000
-      validation-timeout: 10000
 
 springdoc:
   swagger-ui:

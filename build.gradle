@@ -17,17 +17,6 @@ configurations {
 repositories {
     mavenLocal()
     mavenCentral()
-//    maven {
-//        url "https://res-lab.globaltruck.ru/api/v4/groups/backend/-/packages/maven"
-//        name "GitLab"
-//        credentials(HttpHeaderCredentials) {
-//            name = 'Job-Token'
-//            value = System.getenv("CI_JOB_TOKEN")
-//        }
-//        authentication {
-//            header(HttpHeaderAuthentication)
-//        }
-//    }
 }
 
 dependencies {
@@ -41,15 +30,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.7'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.testcontainers:junit-jupiter:1.16.3'
+    testImplementation 'org.testcontainers:postgresql:1.16.3'
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.10'
     implementation group: 'io.swagger.parser.v3', name: 'swagger-parser', version: '2.1.1'
-
-//    implementation 'commons-net:commons-net:3.9.0'
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-//    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
-
-
 }
 
 tasks.named('test') {
