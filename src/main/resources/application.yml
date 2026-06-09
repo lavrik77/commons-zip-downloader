@@ -8,12 +8,12 @@ hostname: local
 config:
 
   datasource:
-    server: c-c9qo77lmedokhub6ve0h.rw.mdb.yandexcloud.net:6432
+    server: c-f9qo77lmedakhuj6ve0h.yandexcloud.net:6432
     ssl: true
     sslmode: verify-full
-    database: integrations-001-data-control
-    username: integrations-001-data-control_preprod
-    password: integrations-001-data-control
+    database: data-control
+    username: data-control_preprod
+    password: data-control
 
   server:
     url: http://localhost:8080
